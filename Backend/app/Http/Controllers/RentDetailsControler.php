@@ -10,6 +10,14 @@ class RentDetailsControler extends Controller
 {
     //
     public function rentData(Request $request){
+
+        $request->validate([
+            'userid' => 'required|integer',
+            'carid' => 'required|integer',
+            'rental_date' => 'required|date',
+            'return_date' => 'required|date|after:rental_date',
+        ]);
+
         $car = new rentDetails;
         $car->userid = $request->input('userid');
         $car->carid = $request->input('carid');
@@ -22,8 +30,7 @@ class RentDetailsControler extends Controller
         $rent->update();
 
         $car->save();
-        return response()->json($car);
-
+            return response()->json($car);
     }
     public function carView()
     {

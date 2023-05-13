@@ -7,6 +7,7 @@ use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Validator;
 
 class CarDetailsControler extends Controller
 {
@@ -16,25 +17,21 @@ class CarDetailsControler extends Controller
         return response()->json($car);
     }
 
-//    function create()
-//    {
-//        return view('BookCreate');
-//    }
-
-//    function update(Books $book)
-//    {
-//        return view('BookUpdate', compact('book'));
-//    }
-
     public function carPost(Request $request)
     {
-//        $request->validate([
-//
-//            'title' => 'required|max:15',
-//            'author' => 'required|max:15|regex:/^[a-zA-Z]+(?:\s[a-zA-Z]+)+$/',
-//            'date' => 'required|before:today',
-//            'description' => 'required|max:15'
-//        ]);
+        $validator = Validator::make($request->all(), [
+            'brand' => 'required|string',
+            'model' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'gearbox' => 'required|string',
+            'fuel' => 'required|string',
+            'availability' => 'required',
+            'image' => 'required|image|max:2048'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+        }
+
         $car = new CarDetails;
         $car->brand = $request->input('brand');
         $car->model = $request->input('model');
@@ -50,18 +47,22 @@ class CarDetailsControler extends Controller
         }
         $car->save();
         return response()->json($car);
-
-
-
     }
 
     public function carUpdate(Request $request, $id)
     {
-//        $request->validate([
-//            'title'=>'required',
-//            'description'=>'required',
-//            'image'=>'nullable'
-//        ]);
+        $validator = Validator::make($request->all(), [
+            'brand' => 'required|string',
+            'model' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'gearbox' => 'required|string',
+            'fuel' => 'required|string',
+            'availability' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+        }
+
         $car = CarDetails::findOrFail($id);
 
         $car->brand = $request->input('brand');
@@ -86,15 +87,12 @@ class CarDetailsControler extends Controller
             $car->image = $filename;
             $car->update();
 
-
-
             return response()->json([
-                'message' => 'Product Updated Successfully!!'
+                'success' => 'Product Updated Successfully!!'
             ]);
 
 
         }
-//        $car->image = $request->input('image');
         $car->update();
 
         return response()->json([
@@ -102,10 +100,6 @@ class CarDetailsControler extends Controller
         ]);
 
     }
-
-//
-//
-
     function carUpdateView(CarDetails $id){
         $car = CarDetails::findOrFail($id->id);
         return response()->json($car);

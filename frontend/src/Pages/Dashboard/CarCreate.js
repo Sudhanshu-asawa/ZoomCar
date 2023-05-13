@@ -23,10 +23,18 @@ function Create() {
     const [model, setModel] = useState("");
     const [gearbox, setGearbox] = useState("");
     const [availability, setAvailability] = useState(0);
+    const [errImage, setErrImage] = useState("");
+    const [errPrice, setErrPrice] = useState("");
+    const [errFuel, setErrFuel] = useState("");
+    const [errGearbox, setErrGearbox] = useState("");
 
     const navigate = useNavigate(); //navigation
 
     const carPost = async (event) => {
+        if (price < 1 || price > 100000) {
+            alert('Invalid price. Price must be between 1 and 100,000.');
+            return;
+        }
         event.preventDefault();
         const formData = new FormData();
         formData.append("image", image);
@@ -40,13 +48,33 @@ function Create() {
         let result = await fetch("http://localhost:8000/api/carPost", {
             method: 'POST',
             body: formData
-        });
+        })
+            .catch(error =>{
+                alert(error)
+            })
         result = await result.json();
         console.warn("result", result);
-        navigate('/dashboard');
-        // localStorage.setItem("car-info", JSON.stringify(result));
-
-
+        if(result.brand){
+            alert("Car Regestered Successfully")
+            navigate('/dashboard');
+        }
+        if (result.error) {
+            alert("Invalid Data")
+        }
+        if (result.errors) {
+            if (result.errors.price) {
+                setErrPrice(result.errors.price[0])
+            }
+            if (result.errors.image) {
+                setErrImage(result.errors.image[0])
+            }
+            if (result.errors.fuel) {
+                setErrFuel(result.errors.fuel[0])
+            }
+            if (result.errors.gearbox) {
+                setErrGearbox(result.errors.gearbox[0])
+            }
+        }
     }
 
     return (
@@ -55,37 +83,42 @@ function Create() {
             <div className={"container mt-5"}>
                 <Form onSubmit={carPost} encType="multipart/form-data" className={"w-50 text-left mx-auto bg-light p-3"}>
                     <h2 className="font-weight-light">New Car Details</h2>
-                    <Form.Group className="mb-3 mt-5" controlId="formBasicBrand">
+                    <Form.Group  className="mb-3 mt-5" controlId="formBasicBrand">
                         <Form.Label>Brand</Form.Label>
-                        <Form.Control type="text" placeholder="Enter Brand Name" value={brand}
+                        <Form.Control required type="text" placeholder="Enter Brand Name" value={brand}
                                       onChange={(e) => setBrand(e.target.value)}/>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicModel">
                         <Form.Label>Model</Form.Label>
-                        <Form.Control type="text" placeholder="Enter Model" value={model}
+                        <Form.Control required type="text" placeholder="Enter Model" value={model}
                                       onChange={(e) => setModel(e.target.value)}/>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicPrice">
                         <Form.Label>Price Per day</Form.Label>
-                        <Form.Control type="integer" placeholder="Enter Price" value={price}
+                        <Form.Control required type="integer" placeholder="Enter Price" value={price}
                                       onChange={(e) => setPrice(e.target.value)}/>
+                        <span className="text-danger">{errPrice}</span>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicFuel">
                         <Form.Label>Fuel</Form.Label>
-                        <Form.Select value={fuel} onChange={(e) => setFuel(e.target.value)} aria-label="Default select example">
+                        <Form.Select required value={fuel} onChange={(e) => setFuel(e.target.value)} aria-label="Default select example">
+                            <option >SELECT FUEL TYPE</option>
                             <option value="Petrol">Petrol</option>
                             <option value="Diesel">Diesel</option>
                             <option value="Electric">Electric</option>
                         </Form.Select>
+                        <span className="text-danger">{errFuel}</span>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicGearbox">
                         <Form.Label>Gearbox</Form.Label>
-                        <Form.Select value={gearbox} onChange={(e) => setGearbox(e.target.value)} aria-label="Default select example">
+                        <Form.Select required value={gearbox} onChange={(e) => setGearbox(e.target.value)} aria-label="Default select example">
+                            <option >SELECT GEARBOX</option>
                             <option value="AMT">AMT</option>
                             <option value="Manual">Manual</option>
                             <option value="CVT">CVT</option>
                         </Form.Select>
+                        <span className="text-danger">{errGearbox}</span>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicModel">
                         <Form.Label>Availability</Form.Label>
@@ -94,7 +127,8 @@ function Create() {
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formFile">
                         <Form.Label>Upload Image</Form.Label>
-                        <Form.Control type="file" onChange={(e) => setPhoto(e.target.files[0])}/>
+                        <Form.Control required type="file" onChange={(e) => setPhoto(e.target.files[0])}/>
+                        <span className="text-danger">{errImage}</span>
                     </Form.Group>
 
                     <Button type={"submit"} variant="primary">

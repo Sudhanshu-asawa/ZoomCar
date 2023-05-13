@@ -17,6 +17,7 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path={'/login'} element={<Login/>}/>
+                    <Route path={'/'} element={<Signup/>}/>
                     <Route path={'/signup'} element={<Signup/>}/>
                     <Route path={'/dashboard'} element={<Dashboard/>}/>
                     <Route path={'/listing'} element={<Listing/>}/>
@@ -25,7 +26,6 @@ function App() {
                     <Route path={'/rentForm/:id'} element={<RentForm/>}/>
                     <Route path={'/home'} element={<Home/>}/>
                     <Route path={'/logout'} element={<Logout/>}/>
-
                 </Routes>
             </BrowserRouter>
         </div>

@@ -33,6 +33,15 @@ function RentForm() {
     const totalPrice = daysDiff * price;
 
     const rentPost = async (event) => {
+        if (totalPrice > 1450000) {
+            alert("You cannot rent the car for that long.");
+            return;
+        }
+
+        if (isNaN(totalPrice) || totalPrice < 0) {
+            alert("Invalid price calculation. Please check the rent dates.");
+            return;
+        }
         event.preventDefault();
         const formData = new FormData();
         formData.append("userid", user.userid);
@@ -44,12 +53,22 @@ function RentForm() {
         let result = await fetch("http://localhost:8000/api/rentDetails", {
             method: 'POST',
             body: formData
-        });
+        })
+            .catch((error)=>{
+                alert("error")
+            })
         result = await result.json();
         console.warn("result", result);
-        navigate('/listing');
-        // localStorage.setItem("car-info", JSON.stringify(result));
+        if(result.carid){
+            alert("Car Rented Successfully")
+            navigate('/listing');
+        }
+        else{
+            alert("Network error")
+        }
+
     }
+    const today = new Date().toISOString().split('T')[0];
 
     return (
         <div>
@@ -59,12 +78,12 @@ function RentForm() {
                     <h2 className="font-weight-light">Car Renting details</h2>
                     <Form.Group className="mb-3 mt-5" controlId="formBasicBrand">
                         <Form.Label>Rent Date</Form.Label>
-                        <Form.Control type="date" placeholder="Enter Rent Date" value={rent_date}
+                        <Form.Control required min={today} type="date" placeholder="Enter Rent Date" value={rent_date}
                                       onChange={(e) => setRent_Date(e.target.value)}/>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicBrand">
                         <Form.Label>Return Date</Form.Label>
-                        <Form.Control type="date" placeholder="Enter Return Date" value={return_date}
+                        <Form.Control required min={rent_date || today} type="date" placeholder="Enter Return Date" value={return_date}
                                       onChange={(e) => setReturn_Date(e.target.value)}/>
                     </Form.Group>
 

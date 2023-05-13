@@ -21,6 +21,7 @@ function Login() {
 
     }, []);
 
+
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
     const navigate = useNavigate(); //navigation
@@ -38,6 +39,7 @@ function Login() {
             },
             body: JSON.stringify(item)
         })
+            .catch(error => console.error(error));
         result = await result.json();
         console.warn("result", result);
         console.warn("result", result.name);
@@ -49,6 +51,9 @@ function Login() {
             else {
                 navigate("/listing");
             }
+        }
+        if(result.error){
+            alert("Invalid Data")
         }
     }
 
@@ -62,13 +67,13 @@ function Login() {
                     <h2 className="font-weight-light">Login</h2>
                     <Form.Group className="mb-3 mt-5" controlId="formBasicEmail">
                         <Form.Label>Email address</Form.Label>
-                        <Form.Control name="email" type="email" placeholder="Enter email" value={email}
+                        <Form.Control required name="email" type="email" placeholder="Enter email" value={email}
                                       onChange={(e) => setEmail(e.target.value)}/>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicPassword">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control name="password" type="password" placeholder="Password" value={password}
+                        <Form.Control required name="password" type="password" placeholder="Password" value={password}
                                       onChange={(e) => setPassword(e.target.value)}/>
                     </Form.Group>
                     <Button type={"submit"} variant="primary">
