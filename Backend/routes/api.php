@@ -30,7 +30,10 @@ Route::get('/carData/{id}',[CarDetailsControler::class,'carUpdateView']);
 Route::post('/carUpdate/{id}',[CarDetailsControler::class,'carUpdate']);
 
 Route::delete('/carDelete/{id}',[CarDetailsControler::class,'carDelete']);
+Route::delete('/carRentDelete/{id}',[RentDetailsControler::class,'carRentDelete']);
 
 Route::post('/rentDetails',[RentDetailsControler::class,'rentData']);
 Route::get('/rentData',[RentDetailsControler::class,'carView']);
 Route::get('/rentDataO',[RentDetailsControler::class,'carViewO']);
+Route::get('/rentCar',[RentDetailsControler::class,'rentedCar']);
+Route::get('/userRentCar/{id}',[RentDetailsControler::class,'userRentedCar']);

@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\CarDetails;
 use App\Models\rentDetails;
+use App\Models\User;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RentDetailsControler extends Controller
 {
@@ -41,5 +44,40 @@ class RentDetailsControler extends Controller
     {
         $car = CarDetails::where('availability', false)->get();
         return response()->json($car);
+    }
+    public function rentedCar(Request $request){
+        $cars = CarDetails::join('rent_details', 'car_details.id', '=', 'rent_details.carid')
+        ->join('users', 'rent_details.userid', '=', 'users.id')
+        ->where('car_details.availability', 0)
+        ->select('car_details.*',
+            DB::raw('DATEDIFF(rent_details.return_date, rent_details.rental_date) AS rent_duration'),
+            'users.name as user_name', 'rent_details.return_date')
+        ->get();
+
+    return response()->json($cars);
+
+    }
+    public function userRentedCar(Request $request ,$id){
+        $cars = CarDetails::join('rent_details', 'car_details.id', '=', 'rent_details.carid')
+        ->where('rent_details.userid', $id)
+        ->select('car_details.*',
+            DB::raw('DATEDIFF(rent_details.return_date, rent_details.rental_date) AS rent_duration'), 'rent_details.return_date')
+        ->get();
+
+    return response()->json($cars);
+    }
+
+    function carRentDelete($id)
+    {
+        $car = rentDetails::where('carid', $id);
+        $car->delete();
+        $rent = CarDetails::findOrFail($id);
+        $rent->availability = true;
+        $rent->update();
+
+        return response([
+        "success" => "Data Deleted Successfully",
+            "msg"=>"hello"
+    ]);
     }
 }

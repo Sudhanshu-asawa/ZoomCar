@@ -26,6 +26,7 @@ function Home() {
     return (
         <div>
             <Header/>
+            <div>
             <Carousel>
                 <Carousel.Item>
                     <img
@@ -60,6 +61,8 @@ function Home() {
             <p className="banner-text">The Only Solution for </p>
             <p className="banner-text"> for </p>
             <p className="banner-text"> Your Next Trip</p>
+            </div>
+
 
         </div>
     );

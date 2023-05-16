@@ -22,7 +22,11 @@ class AuthController extends Controller
         $user->email=$request->input('email');
         $user->password=Hash::make($request-> input('password'));
         $user->save();
-        return $user;
+        return response([
+            "name"=>$user->name,
+            "userid"=>$user->id,
+            "isAdmin"=>$user->IsAdmin
+         ]);
 
 
     }

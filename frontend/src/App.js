@@ -9,6 +9,8 @@ import CarEdit from './Pages/Dashboard/CarEdit';
 import RentForm from "./Pages/rentForm";
 import Home from "./Pages/homePage";
 import Logout from "./Pages/include/logout"
+import RentedCar from './Pages/Dashboard/RentedCar';
+import UserRentedCar from './Pages/userRentedCar';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 
 function App() {
@@ -25,6 +27,8 @@ function App() {
                     <Route path={'/caredit/:id'} element={<CarEdit/>}/>
                     <Route path={'/rentForm/:id'} element={<RentForm/>}/>
                     <Route path={'/home'} element={<Home/>}/>
+                    <Route path={'/rentedCar'} element={<RentedCar/>}/>
+                    <Route path={'/userRentedCar'} element={<UserRentedCar/>}/>
                     <Route path={'/logout'} element={<Logout/>}/>
                 </Routes>
             </BrowserRouter>

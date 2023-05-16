@@ -61,7 +61,7 @@ function RentForm() {
         console.warn("result", result);
         if(result.carid){
             alert("Car Rented Successfully")
-            navigate('/listing');
+            window.location.href = '/listing';
         }
         else{
             alert("Network error")

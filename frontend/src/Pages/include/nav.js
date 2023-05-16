@@ -12,6 +12,7 @@ function Header() {
                     <Navbar.Brand href="#home">ZoomCar</Navbar.Brand>
                     <Nav className="me-auto m-lg-1">
                         <Nav.Link href="/carcreate">Create</Nav.Link>
+                        <Nav.Link href="/rentedCar">Rented Cars</Nav.Link>
                         <Nav.Link href="/dashboard">Dashboard</Nav.Link>
                         <Nav.Link href="/logout">Logout</Nav.Link>
 
